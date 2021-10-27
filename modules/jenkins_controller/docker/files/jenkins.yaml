@@ -1,0 +1,182 @@
+jenkins:
+    systemMessage: "AWS ECS/FARGATE Demo"
+    numExecutors: 0
+    remotingSecurity:
+      enabled: true
+    agentProtocols:
+        - "JNLP4-connect"
+    securityRealm:
+        local:
+            allowsSignup: false
+            users:
+                - id: ecsuser
+                  password: ${ADMIN_PWD}
+    authorizationStrategy:
+        globalMatrix:
+            grantedPermissions:
+                - "Overall/Read:authenticated"
+                - "Job/Read:authenticated"
+                - "View/Read:authenticated"
+                - "Overall/Administer:authenticated"
+    crumbIssuer: "standard"
+    slaveAgentPort: 50000
+    clouds:
+        - ecs:
+              allowedOverrides: "inheritFrom,label,memory,cpu,image"
+              credentialsId: ""
+              cluster: arn:aws:ecs:us-west-2:163402763754:cluster/serverless-jenkins-main
+              name: "fargate-cloud"
+              regionName: us-west-2
+              retentionTimeout: 10
+              jenkinsUrl: "http://controller.serverless-jenkins:8080"
+              templates:
+                  - cpu: "512"
+                    image: "jenkins/inbound-agent"
+                    label: "build-example"
+                    launchType: "FARGATE"
+                    memory: 0
+                    memoryReservation: 1024
+                    networkMode: "awsvpc"
+                    privileged: false
+                    remoteFSRoot: "/home/jenkins"
+                    securityGroups: sg-0c0acfdfeeff0a144
+                    sharedMemorySize: 0
+                    subnets: subnet-027486f8df8ab8cdf,subnet-007390c31153f5dd1
+                    templateName: "build-example"
+                    uniqueRemoteFSRoot: false
+        - ecs:
+              allowedOverrides: "inheritFrom,label,memory,cpu,image"
+              credentialsId: ""
+              cluster: "arn:aws:ecs:us-west-2:844264109907:cluster/jenkins_agent-ecs-cluster"
+              name: "ecs-cloud-remote"
+              assumedRoleArn: "arn:aws:iam::844264109907:role/jenkins-deploy-role"
+              regionName: us-west-2
+              retentionTimeout: 10
+              tunnel: serverless-jenkins-jnlp-nlb-f4070641a1b23d63.elb.us-west-2.amazonaws.com:50000
+              jenkinsUrl: "http://serverless-jenkins-crtl-alb-514239220.us-west-2.elb.amazonaws.com"
+              templates:
+                  - cpu: "512"
+                    image: "jenkins/inbound-agent"
+                    label: "ecs-remote"
+                    launchType: "EC2"
+                    memory: 0
+                    memoryReservation: 1024
+                    networkMode: "awsvpc"
+                    privileged: false
+                    remoteFSRoot: "/home/jenkins"
+                    securityGroups: sg-04f932ece047b31e0
+                    sharedMemorySize: 0
+                    subnets: subnet-0286e0a4977e9ea24, subnet-0fd07b596721ee495
+                    templateName: "ecs-remote"
+                    uniqueRemoteFSRoot: false
+        - ecs:
+              allowedOverrides: "inheritFrom,label,memory,cpu,image"
+              credentialsId: ""
+              cluster: "arn:aws:ecs:us-west-2:844264109907:cluster/jenkins_agent-fg-cluster"
+              name: "fargate-cloud-remote"
+              assumedRoleArn: "arn:aws:iam::844264109907:role/jenkins-deploy-role"
+              regionName: us-west-2
+              retentionTimeout: 10
+              tunnel: serverless-jenkins-jnlp-nlb-f4070641a1b23d63.elb.us-west-2.amazonaws.com:50000
+              jenkinsUrl: "http://serverless-jenkins-crtl-alb-514239220.us-west-2.elb.amazonaws.com"
+              templates:
+                  - cpu: "512"
+                    image: "jenkins/inbound-agent"
+                    label: "fargate-remote"
+                    launchType: "FARGATE"
+                    memory: 0
+                    memoryReservation: 1024
+                    networkMode: "awsvpc"
+                    privileged: false
+                    remoteFSRoot: "/home/jenkins"
+                    securityGroups: sg-04f932ece047b31e0
+                    sharedMemorySize: 0
+                    subnets: subnet-0286e0a4977e9ea24, subnet-0fd07b596721ee495
+                    templateName: "fargate-remote"
+                    uniqueRemoteFSRoot: false
+security:
+  sSHD:
+    port: -1
+jobs:
+  - script: >
+      pipelineJob('Simple job local task') {
+        definition {
+          cps {
+            script('''
+              pipeline {
+                  agent {
+                      ecs {
+                          inheritFrom 'build-example'
+                      }
+                  }
+                  stages {
+                    stage('Test') {
+                        steps {
+                            script {
+                                sh "echo this was executed on local Fargate cluster"
+                            }
+                            sh 'sleep 120'
+                            sh 'echo sleep is done'
+                        }
+                    }
+                  }
+              }'''.stripIndent())
+              sandbox()
+          }
+        }
+      }
+  - script: >
+      pipelineJob('Simple job ECS remote task') {
+        definition {
+          cps {
+            script('''
+              pipeline {
+                  agent {
+                      ecs {
+                          inheritFrom 'ecs-remote'
+                      }
+                  }
+                  stages {
+                    stage('Test') {
+                        steps {
+                            script {
+                                sh "echo this was executed on remote ECS Cluster"
+                            }
+                            sh 'sleep 120'
+                            sh 'echo sleep is done'
+                        }
+                    }
+                  }
+              }'''.stripIndent())
+              sandbox()
+          }
+        }
+      }
+  - script: >
+      pipelineJob('Simple job FARGATE remote task') {
+        definition {
+          cps {
+            script('''
+              pipeline {
+                  agent {
+                      ecs {
+                          inheritFrom 'fargate-remote'
+                      }
+                  }
+                  stages {
+                    stage('Test') {
+                        steps {
+                            script {
+                                sh "echo this was executed on a remote FARGATE cluster"
+                            }
+                            sh 'sleep 120'
+                            sh 'echo sleep is done'
+                        }
+                    }
+                  }
+              }'''.stripIndent())
+              sandbox()
+          }
+        }
+      }
+
