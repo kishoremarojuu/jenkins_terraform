@@ -39,7 +39,7 @@ module "jenkins_agent" {
   source = "../../modules/jenkins_agent"
 
   create_ecs_agent     = true
-  create_fargate_agent = true
+  create_fargate_agent = false #CHANGEME
 
   name_prefix        = var.name_prefix
   private_subnet_ids = module.jenkins_agent_vpc.private_subnets
@@ -55,7 +55,7 @@ module "jenkins_agent" {
   tags               = local.tags
 
   // CHANGE Following Values
-  jenkins_controller_account_id = "" #CHANGEME
+  jenkins_controller_account_id = "317443947632" #CHANGEME
 }
 // Outputs
 output "jenkins_agent_private_subnets" {
