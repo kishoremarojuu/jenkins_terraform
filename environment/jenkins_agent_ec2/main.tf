@@ -6,10 +6,10 @@ terraform {
     }
   }
   backend "s3" {
-    profile = "cloud_871244369079"   #CHANGEME
-    bucket  = "jenkins-ivd-integration" #CHANGEME
+    profile = "masterController"   #CHANGEME
+    bucket  = "jenkins-ivd-integration-2" #CHANGEME
     region  = "us-west-2"
-    key     = "poc_agent"
+    key     = "jenkinsAgentEC2Key"
     encrypt = true
 
   }
@@ -21,7 +21,7 @@ provider "aws" {
   region                  = "us-west-2"
   skip_metadata_api_check = true
   assume_role {
-    role_arn = "arn:aws:iam::198365975033:role/Administrator"
+    role_arn = "arn:aws:iam::480455260188:role/Administrator"
   }
 }
 

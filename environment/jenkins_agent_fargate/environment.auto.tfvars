@@ -1,5 +1,5 @@
 # A name to describe the environment we're creating.
-environment = "poc"
+environment = "prod"
 
 # A name to describe the environment we're creating.
 name_prefix = "jenkins-agent"
@@ -46,7 +46,7 @@ instance_type = "t2.medium"
 jenkins_ecs_cluster_name = "jenkins-controller"
 
 tags = {
-  team        = "devops"
+  team        = "ruo"
   solution    = "jenkins"
-  environment = "poc"
+  project  = "ruo-jenkins"
 }

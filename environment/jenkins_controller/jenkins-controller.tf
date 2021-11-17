@@ -6,9 +6,9 @@ locals {
   name_prefix = "serverless-jenkins"
 
   tags = {
-    team     = "devops"
+    team     = "ruo"
     solution = "jenkins"
-    project  = "poc"
+    project  = "ruo-jenkins"
   }
 }
 
@@ -48,8 +48,8 @@ module "serverless_jenkins" {
 
   // CHANGE Following Values
   remote_agent_account_id           = ""                                                #CHANGEME
-  remote_agent_subnets              = "subnet-0286e0a4977e9ea24, subnet-0fd07b596721ee" #CHANGEME
-  remote_agent_security_groups      = "sg-04f932ece047b31e0"                            #CHANGEME
+  remote_agent_subnets              = "subnet-08a7c7a57722fa82f, subnet-0b24413f38002a2a7" #CHANGEME
+  remote_agent_security_groups      = "sg-06df7e240cac01cc4"                            #CHANGEME
   remote_agent_ecs_cluster_name     = ""                                                #CHANGEME
   remote_agent_fargate_cluster_name = ""                                                #CHANGEME  
 }

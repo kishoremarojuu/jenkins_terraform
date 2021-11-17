@@ -1,5 +1,5 @@
 # A name to describe the environment we're creating.
-environment = "poc"
+environment = "prod"
 
 # A name to describe the environment we're creating.
 name_prefix = "jenkins-agent"
@@ -40,13 +40,13 @@ min_size = 1
 desired_capacity = 1
 
 # Size of instances in the ECS cluster.
-instance_type = "t2.medium"
+instance_type = "t3.medium"
 
 # Name of the ECS cluster for running Master Jenkins
 jenkins_ecs_cluster_name = "jenkins-controller"
 
 tags = {
-  team        = "devops"
+  team        = "ruo"
   solution    = "jenkins"
-  environment = "poc"
+  project  = "ruo-jenkins"
 }

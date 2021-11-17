@@ -1,8 +1,8 @@
 locals {
   tags = {
-    team     = "devops"
+    team     = "ruo"
     solution = "jenkins"
-    project  = "poc"
+    project  = "ruo-jenkins"
   }
 }
 

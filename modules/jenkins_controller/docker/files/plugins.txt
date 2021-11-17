@@ -5,7 +5,6 @@ apache-httpcomponents-client-4-api:4.5.13-1.0
 authentication-tokens:1.4
 aws-credentials:1.30
 aws-java-sdk:1.11.995
-bouncycastle-api:2.18
 branch-api:2.6.5
 build-timeout:1.19.1
 cloudbees-folder:6.16
@@ -71,3 +70,6 @@ workflow-scm-step:2.13
 workflow-step-api:2.24
 workflow-support:3.8
 ws-cleanup:0.38
+workflow-multibranch:2.25
+saml:2.0.9
+role-strategy:3.2.0
