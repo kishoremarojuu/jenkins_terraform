@@ -115,7 +115,7 @@ jobs:
                             script {
                                 sh "echo this was executed on local Fargate cluster"
                             }
-                            sh 'sleep 120'
+                            sh 'sleep 20'
                             sh 'echo sleep is done'
                         }
                     }
@@ -142,7 +142,7 @@ jobs:
                             script {
                                 sh "echo this was executed on remote ECS Cluster"
                             }
-                            sh 'sleep 120'
+                            sh 'sleep 20'
                             sh 'echo sleep is done'
                         }
                     }
@@ -169,7 +169,7 @@ jobs:
                             script {
                                 sh "echo this was executed on a remote FARGATE cluster"
                             }
-                            sh 'sleep 120'
+                            sh 'sleep 20'
                             sh 'echo sleep is done'
                         }
                     }
