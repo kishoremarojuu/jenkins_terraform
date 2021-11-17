@@ -179,39 +179,39 @@ resource "aws_lb_listener" "http" {
   # }
 }
 
-# resource "aws_lb_listener" https {
-#   load_balancer_arn = aws_lb.this.arn
-#   port              = 443
-#   protocol          = "HTTPS"
-#   ssl_policy        = "ELBSecurityPolicy-FS-1-2-Res-2019-08"
-#   certificate_arn   = var.alb_acm_certificate_arn
+resource "aws_lb_listener" https {
+   load_balancer_arn = aws_lb.this.arn
+   port              = 443
+   protocol          = "HTTPS"
+   ssl_policy        = "ELBSecurityPolicy-FS-1-2-Res-2019-08"
+  certificate_arn   = "arn:aws:acm:us-west-2:871244369079:certificate/586d20d5-33bf-460c-b9b7-b9e8f9a123a8"
 
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.this.arn
-#   }
-# }
+   default_action {
+     type             = "forward"
+     target_group_arn = aws_lb_target_group.this.arn
+   }
+ }
 
-# resource "aws_lb_listener_rule" redirect_http_to_https {
-#   listener_arn = aws_lb_listener.http.arn
+ resource "aws_lb_listener_rule" redirect_http_to_https {
+   listener_arn = aws_lb_listener.http.arn
 
-#   action {
-#     type = "redirect"
+   action {
+     type = "redirect"
 
-#     redirect {
-#       port        = "443"
-#       protocol    = "HTTPS"
-#       status_code = "HTTP_301"
-#     }
-#   }
+     redirect {
+      port        = "443"
+       protocol    = "HTTPS"
+       status_code = "HTTP_301"
+     }
+   }
 
-#   condition {
-#     http_header {
-#       http_header_name = "*"
-#       values           = ["*"]
-#     }
-#   }
-# }
+  condition {
+     http_header {
+       http_header_name = "*"
+       values           = ["*"]
+     }
+   }
+ }
 
 # resource "aws_route53_record" this {
 #   count = var.route53_create_alias ? 1 : 0
@@ -226,6 +226,21 @@ resource "aws_lb_listener" "http" {
 #     evaluate_target_health = true
 #   }
 # }
+
+//attaching the load balancer to the route53
+#data "aws_route53_zone" "archer_net_zone" {
+#  provider = aws.primary
+#  name     = "archerdx.net."
+#}
+
+#resource "aws_route53_record" "jenkins_dns" {
+ # provider = aws.primary
+ # zone_id  = data.aws_route53_zone.archer_net_zone.zone_id
+  #name     = "cicd.${data.aws_route53_zone.archer_net_zone.name}"
+  #type     = "CNAME"
+  #ttl      = "300"
+  #records  = ["serverless-jenkins-crtl-alb-1422158911.us-west-2.elb.amazonaws.com"]
+#}
 
 // NLB
 resource "aws_security_group" "jnlp" {
