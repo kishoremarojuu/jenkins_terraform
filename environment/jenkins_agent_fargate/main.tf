@@ -7,7 +7,7 @@ terraform {
   }
   backend "s3" {
     profile = "871244369079MasterController"   #CHANGEME
-    bucket  = "jenkins-ivd-integration-2" #CHANGEME
+    bucket  = "jenkins-ivd-integration" #CHANGEME
     region  = "us-west-2"
     key     = "jenkinsFargateAgentKey"
     encrypt = true
