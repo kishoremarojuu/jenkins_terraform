@@ -17,3 +17,7 @@ output "efs_security_group_id" {
   value       = aws_security_group.efs_security_group.id
   description = "The id of the efs security group"
 }
+
+output "lb_dns_name" {
+  value = aws_lb.this.dns_name
+}

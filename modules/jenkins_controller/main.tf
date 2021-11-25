@@ -227,20 +227,6 @@ resource "aws_lb_listener" https {
 #   }
 # }
 
-//attaching the load balancer to the route53
-#data "aws_route53_zone" "archer_net_zone" {
-#  provider = aws.primary
-#  name     = "archerdx.net."
-#}
-
-#resource "aws_route53_record" "jenkins_dns" {
- # provider = aws.primary
- # zone_id  = data.aws_route53_zone.archer_net_zone.zone_id
-  #name     = "cicd.${data.aws_route53_zone.archer_net_zone.name}"
-  #type     = "CNAME"
-  #ttl      = "300"
-  #records  = ["serverless-jenkins-crtl-alb-1422158911.us-west-2.elb.amazonaws.com"]
-#}
 
 // NLB
 resource "aws_security_group" "jnlp" {

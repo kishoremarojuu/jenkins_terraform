@@ -54,3 +54,19 @@ module "serverless_jenkins" {
   remote_agent_fargate_cluster_name = ""                                                #CHANGEME  
 }
 
+data "aws_route53_zone" "archer_net_zone" {
+  provider = aws.route53mainaccount
+  name     = "archerdx.net."
+}
+
+resource "aws_route53_record" "jenkins_dns" {
+  provider = aws.route53mainaccount
+  zone_id  = data.aws_route53_zone.archer_net_zone.zone_id
+  name     = "cicd.${data.aws_route53_zone.archer_net_zone.name}"
+  type     = "CNAME"
+  ttl      = "300"
+  records  = [module.serverless_jenkins.lb_dns_name]
+  lifecycle {
+    create_before_destroy = true
+  }
+}

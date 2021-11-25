@@ -24,3 +24,13 @@ provider "aws" {
   }
 }
 
+#configure route 53 AWS provider
+provider "aws" {
+  profile                 = "default" #CHANGEME
+  region                  = "us-west-2"
+  alias                   = "route53mainaccount"
+  skip_metadata_api_check = true
+  assume_role {
+      role_arn = "arn:aws:iam::604552748333:role/Administrator"
+  }
+}
