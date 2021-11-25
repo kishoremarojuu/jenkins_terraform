@@ -21,7 +21,7 @@ provider "aws" {
   region                  = "us-west-2"
   skip_metadata_api_check = true
   assume_role {
-    role_arn = "arn:aws:iam::480455260188:role/Administrator"
+    role_arn = "arn:aws:iam::461415053208:role/Administrator"
   }
 }
 
