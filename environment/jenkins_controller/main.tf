@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "s3" {
-    profile = "masterController"   #CHANGEME
+    profile = "871244369079MasterController"   #CHANGEME
     bucket  = "jenkins-ivd-integration-2" #CHANGEME
     region  = "us-west-2"
     key     = "masterControllerKey"
