@@ -60,3 +60,5 @@ fargate agent 2 :480455260188
      Need a group “Jenkins - ADX POC - Users” in jenkins, and can assign it “admin” role for now
 
 13. I am manually adding the 3rd cloud, not able to run, why ?
+
+14. https security group by default is not https , check why ?
