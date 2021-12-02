@@ -97,7 +97,7 @@ resource "aws_security_group" "alb_security_group" {
     protocol    = "tcp"
     from_port   = 443
     to_port     = 443
-    cidr_blocks = var.alb_ingress_allow_cidrs
+    cidr_blocks      = ["0.0.0.0/0"]
     description = "HTTPS Public access"
   }
 

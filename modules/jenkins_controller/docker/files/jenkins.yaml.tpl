@@ -53,12 +53,21 @@ jenkins:
           usernameAttributeName: "username"
           usernameCaseConversion: "lowercase"
     authorizationStrategy:
-        globalMatrix:
-            grantedPermissions:
-                - "Overall/Read:authenticated"
-                - "Job/Read:authenticated"
-                - "View/Read:authenticated"
-                - "Overall/Administer:authenticated"
+        roleBased:
+          roles:
+            global:
+              - name: "admin"
+                description: "Jenkins administrators"
+                permissions:
+                  - "Overall/Administer"
+                assignments:
+                  - "admin"
+              - name: "Jenkins - ADX POC"
+                description: "Jenkins - ADX POC Users"
+                permissions:
+                  - "Overall/Administer"
+                assignments:
+                  - "authenticated"
     crumbIssuer: "standard"
     slaveAgentPort: 50000
     clouds:
