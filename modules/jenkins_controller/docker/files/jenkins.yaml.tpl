@@ -94,6 +94,20 @@ jenkins:
                     subnets: ${subnets}
                     templateName: "build-example"
                     uniqueRemoteFSRoot: false
+                  - cpu: "512"
+                    image: "cloudbees/jnlp-slave-with-java-build-tools"
+                    label: "build-example-sample-java"
+                    launchType: "FARGATE"
+                    memory: 0
+                    memoryReservation: 1024
+                    networkMode: "awsvpc"
+                    privileged: false
+                    remoteFSRoot: "/home/jenkins"
+                    securityGroups: ${agent_security_groups}
+                    sharedMemorySize: 0
+                    subnets: ${subnets}
+                    templateName: "build-example-sample-java"
+                    uniqueRemoteFSRoot: false
         - ecs:
               allowedOverrides: "inheritFrom,label,memory,cpu,image"
               credentialsId: ""
@@ -171,6 +185,48 @@ jobs:
                     }
                   }
               }'''.stripIndent())
+              sandbox()
+          }
+        }
+      }
+  - script: >
+      pipelineJob('Simple maven job local task') {
+        definition {
+          cps {
+            script('''
+                pipeline {
+                      agent {
+                          ecs {
+                              inheritFrom 'build-example-sample-java'
+                          }
+                      }
+                      stages {
+                        stage('SCM Checkout') {
+                            steps {
+                                script {
+                                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '1cef5615-9268-4a6d-970b-64beb263a132', url: 'https://github.com/nsamboju/lordoftherings.git']]])
+                                }
+                                sh "pwd"
+                                echo "SCM Checkout successfull"
+                                sh "chmod +x pom.xml"
+                            }
+                        }
+                        stage('mvn build') {
+                            steps {
+                                dir('/home/jenkins/workspace/Simple maven job local task adding later') {
+                                  script {
+                                    echo "mvn build started"
+                                    sh "chmod +x pom.xml"
+                                    sh pwd
+                                    echo "printing the current path"
+                                    sh "mvn --version"
+                                    sh "mvn clean install"
+                                 }
+                                }
+                            }
+                        }
+                      }
+                }'''.stripIndent())
               sandbox()
           }
         }
