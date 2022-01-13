@@ -78,3 +78,9 @@ variable "ecs_logging" {
 variable "tags" {
   description = "Resource Tags"
 }
+
+variable "create_ecs_task_def_for_agents" {
+  default = false
+}
+
+variable "ecr_account_id" {}

@@ -44,6 +44,9 @@ module "ecs" {
   custom_userdata    = var.custom_userdata
   cloudwatch_prefix  = var.cloudwatch_prefix
   tags               = var.tags
+  ecr_account_id     = var.ecr_account_id
+  #this variable will create custom task definition with private ECR image
+  create_ecs_task_def_for_agents = true #CHANGEME
 }
 
 
@@ -53,4 +56,7 @@ module "fargate" {
 
   name_prefix = var.name_prefix
   tags        = var.tags
+  jenkins_controller_account_id = var.jenkins_controller_account_id
+  ecr_account_id = var.ecr_account_id
+  create_ecs_task_def_for_agents = true #CHANGEME
 }

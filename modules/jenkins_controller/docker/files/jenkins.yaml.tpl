@@ -81,7 +81,7 @@ jenkins:
               jenkinsUrl: "http://${jenkins_cloud_map_name}:${jenkins_controller_port}"
               templates:
                   - cpu: "512"
-                    image: "jenkins/inbound-agent"
+                    image: "871244369079.dkr.ecr.us-west-2.amazonaws.com/ivd-serverless-jenkins"
                     label: "build-example"
                     launchType: "FARGATE"
                     memory: 0
@@ -95,7 +95,7 @@ jenkins:
                     templateName: "build-example"
                     uniqueRemoteFSRoot: false
                   - cpu: "512"
-                    image: "cloudbees/jnlp-slave-with-java-build-tools"
+                    image: "871244369079.dkr.ecr.us-west-2.amazonaws.com/ivd-serverless-jenkins-test"
                     label: "build-example-sample-java"
                     launchType: "FARGATE"
                     memory: 0
@@ -120,7 +120,7 @@ jenkins:
               jenkinsUrl: "http://${jenkins_http_endpoint}"
               templates:
                   - cpu: "512"
-                    image: "jenkins/inbound-agent"
+                    image: "871244369079.dkr.ecr.us-west-2.amazonaws.com/ivd-serverless-jenkins"
                     label: "ecs-remote"
                     launchType: "EC2"
                     memory: 0
@@ -145,7 +145,7 @@ jenkins:
               jenkinsUrl: "http://${jenkins_http_endpoint}"
               templates:
                   - cpu: "512"
-                    image: "jenkins/inbound-agent"
+                    image: "871244369079.dkr.ecr.us-west-2.amazonaws.com/ivd-serverless-jenkins"
                     label: "fargate-remote"
                     launchType: "FARGATE"
                     memory: 0
@@ -201,28 +201,10 @@ jobs:
                           }
                       }
                       stages {
-                        stage('SCM Checkout') {
+                        stage('Build Tools version') {
                             steps {
-                                script {
-                                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '1cef5615-9268-4a6d-970b-64beb263a132', url: 'https://github.com/nsamboju/lordoftherings.git']]])
-                                }
-                                sh "pwd"
-                                echo "SCM Checkout successfull"
-                                sh "chmod +x pom.xml"
-                            }
-                        }
-                        stage('mvn build') {
-                            steps {
-                                dir('/home/jenkins/workspace/Simple maven job local task adding later') {
-                                  script {
-                                    echo "mvn build started"
-                                    sh "chmod +x pom.xml"
-                                    sh pwd
-                                    echo "printing the current path"
-                                    sh "mvn --version"
-                                    sh "mvn clean install"
-                                 }
-                                }
+                                sh "mvn --version"
+                                sh "java -version"
                             }
                         }
                       }

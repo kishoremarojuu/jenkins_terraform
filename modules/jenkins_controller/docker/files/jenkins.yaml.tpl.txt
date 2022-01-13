@@ -53,32 +53,23 @@ jenkins:
           usernameAttributeName: "username"
           usernameCaseConversion: "lowercase"
     authorizationStrategy:
-        roleBased:
-          roles:
-            global:
-              - name: "admin"
-                description: "Jenkins administrators"
-                permissions:
-                  - "Overall/Administer"
-                assignments:
-                  - "admin"
-              - name: "Jenkins - ADX POC"
-                description: "Jenkins - ADX POC Users"
-                permissions:
-                  - "Overall/Administer"
-                assignments:
-                  - "authenticated"
+        globalMatrix:
+            grantedPermissions:
+                - "Overall/Read:authenticated"
+                - "Job/Read:authenticated"
+                - "View/Read:authenticated"
+                - "Overall/Administer:authenticated"
     crumbIssuer: "standard"
     slaveAgentPort: 50000
     clouds:
         - ecs:
               allowedOverrides: "inheritFrom,label,memory,cpu,image"
               credentialsId: ""
-              cluster: arn:aws:ecs:us-west-2:871244369079:cluster/serverless-jenkins-main
+              cluster: ${ecs_cluster_fargate}
               name: "fargate-cloud"
-              regionName: us-west-2
+              regionName: ${cluster_region}
               retentionTimeout: 10
-              jenkinsUrl: "http://controller.serverless-jenkins:8080"
+              jenkinsUrl: "http://${jenkins_cloud_map_name}:${jenkins_controller_port}"
               templates:
                   - cpu: "512"
                     image: "871244369079.dkr.ecr.us-west-2.amazonaws.com/ivd-serverless-jenkins"
@@ -89,13 +80,14 @@ jenkins:
                     networkMode: "awsvpc"
                     privileged: false
                     remoteFSRoot: "/home/jenkins"
-                    securityGroups: sg-084eba6d932ba7dbb
+                    securityGroups: ${agent_security_groups}
                     sharedMemorySize: 0
-                    subnets: subnet-0c7a7a25965261fc9,subnet-0427343bbac1e0005
+                    subnets: ${subnets}
                     templateName: "build-example"
                     uniqueRemoteFSRoot: false
+              templates:
                   - cpu: "512"
-                    image: "871244369079.dkr.ecr.us-west-2.amazonaws.com/ivd-serverless-jenkins-test"
+                    image: "cloudbees/jnlp-slave-with-java-build-tools"
                     label: "build-example-sample-java"
                     launchType: "FARGATE"
                     memory: 0
@@ -103,24 +95,39 @@ jenkins:
                     networkMode: "awsvpc"
                     privileged: false
                     remoteFSRoot: "/home/jenkins"
-                    securityGroups: sg-084eba6d932ba7dbb
+                    securityGroups: ${agent_security_groups}
                     sharedMemorySize: 0
-                    subnets: subnet-0c7a7a25965261fc9,subnet-0427343bbac1e0005
+                    subnets: ${subnets}
+                    templateName: "build-example-sample-java"
+                    uniqueRemoteFSRoot: false
+              templates:
+                  - cpu: "512"
+                    image: "cloudbees/jnlp-slave-with-java-build-tools"
+                    label: "build-example-sample-java"
+                    launchType: "FARGATE"
+                    memory: 0
+                    memoryReservation: 1024
+                    networkMode: "awsvpc"
+                    privileged: false
+                    remoteFSRoot: "/home/jenkins"
+                    securityGroups: ${agent_security_groups}
+                    sharedMemorySize: 0
+                    subnets: ${subnets}
                     templateName: "build-example-sample-java"
                     uniqueRemoteFSRoot: false
         - ecs:
               allowedOverrides: "inheritFrom,label,memory,cpu,image"
               credentialsId: ""
-              cluster: "arn:aws:ecs:us-west-2::cluster/"
+              cluster: "arn:aws:ecs:us-west-2:${remote_agent_account_id}:cluster/${remote_agent_ecs_cluster_name}"
               name: "ecs-cloud-remote"
-              assumedRoleArn: "arn:aws:iam:::role/jenkins-deploy-role"
-              regionName: us-west-2
+              assumedRoleArn: "arn:aws:iam::${remote_agent_account_id}:role/jenkins-deploy-role"
+              regionName: ${cluster_region}
               retentionTimeout: 10
-              tunnel: serverless-jenkins-jnlp-nlb-8e4c0758a66f5522.elb.us-west-2.amazonaws.com:50000
-              jenkinsUrl: "http://serverless-jenkins-crtl-alb-1907168238.us-west-2.elb.amazonaws.com"
+              tunnel: ${jenkins_jnlp_endpoint}:${jnlp_port}
+              jenkinsUrl: "http://${jenkins_http_endpoint}"
               templates:
                   - cpu: "512"
-                    image: "871244369079.dkr.ecr.us-west-2.amazonaws.com/ivd-serverless-jenkins"
+                    image: "jenkins/inbound-agent"
                     label: "ecs-remote"
                     launchType: "EC2"
                     memory: 0
@@ -128,24 +135,24 @@ jenkins:
                     networkMode: "awsvpc"
                     privileged: false
                     remoteFSRoot: "/home/jenkins"
-                    securityGroups: sg-06df7e240cac01cc4
+                    securityGroups: ${remote_agent_security_groups}
                     sharedMemorySize: 0
-                    subnets: subnet-08a7c7a57722fa82f, subnet-0b24413f38002a2a7
+                    subnets: ${remote_agent_subnets}
                     templateName: "ecs-remote"
                     uniqueRemoteFSRoot: false
         - ecs:
               allowedOverrides: "inheritFrom,label,memory,cpu,image"
               credentialsId: ""
-              cluster: "arn:aws:ecs:us-west-2::cluster/"
+              cluster: "arn:aws:ecs:us-west-2:${remote_agent_account_id}:cluster/${remote_agent_fargate_cluster_name}"
               name: "fargate-cloud-remote"
-              assumedRoleArn: "arn:aws:iam:::role/jenkins-deploy-role"
-              regionName: us-west-2
+              assumedRoleArn: "arn:aws:iam::${remote_agent_account_id}:role/jenkins-deploy-role"
+              regionName: ${cluster_region}
               retentionTimeout: 10
-              tunnel: serverless-jenkins-jnlp-nlb-8e4c0758a66f5522.elb.us-west-2.amazonaws.com:50000
-              jenkinsUrl: "http://serverless-jenkins-crtl-alb-1907168238.us-west-2.elb.amazonaws.com"
+              tunnel: ${jenkins_jnlp_endpoint}:${jnlp_port}
+              jenkinsUrl: "http://${jenkins_http_endpoint}"
               templates:
                   - cpu: "512"
-                    image: "871244369079.dkr.ecr.us-west-2.amazonaws.com/ivd-serverless-jenkins"
+                    image: "jenkins/inbound-agent"
                     label: "fargate-remote"
                     launchType: "FARGATE"
                     memory: 0
@@ -153,9 +160,9 @@ jenkins:
                     networkMode: "awsvpc"
                     privileged: false
                     remoteFSRoot: "/home/jenkins"
-                    securityGroups: sg-06df7e240cac01cc4
+                    securityGroups: ${remote_agent_security_groups}
                     sharedMemorySize: 0
-                    subnets: subnet-08a7c7a57722fa82f, subnet-0b24413f38002a2a7
+                    subnets: ${remote_agent_subnets}
                     templateName: "fargate-remote"
                     uniqueRemoteFSRoot: false
 security:
@@ -201,10 +208,28 @@ jobs:
                           }
                       }
                       stages {
-                        stage('Build Tools version') {
+                        stage('SCM Checkout') {
                             steps {
-                                sh "mvn --version"
-                                sh "java -version"
+                                script {
+                                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '1cef5615-9268-4a6d-970b-64beb263a132', url: 'https://github.com/nsamboju/lordoftherings.git']]])
+                                }
+                                sh "pwd"
+                                echo "SCM Checkout successfull"
+                                sh "chmod +x pom.xml"
+                            }
+                        }
+                        stage('mvn build') {
+                            steps {
+                                dir('/home/jenkins/workspace/Simple maven job local task adding later') {
+                                  script {
+                                    echo "mvn build started"
+                                    sh "chmod +x pom.xml"
+                                    sh pwd
+                                    echo "printing the current path"
+                                    sh "mvn --version"
+                                    sh "mvn clean install"
+                                 }
+                                }
                             }
                         }
                       }
@@ -267,4 +292,3 @@ jobs:
           }
         }
       }
-

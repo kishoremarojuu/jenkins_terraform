@@ -43,22 +43,21 @@ terraform apply -target='module.jenkins_agent.module.ecs[0].aws_iam_instance_pro
 
 
 test acocunts
-master account: 871244369079
-ec2 agent: 461415053208
-fargate agent:602710607084
-fargate agent 2 :480455260188
+master account: 871244369079 , <<871244369079.cutomimage>>
+
+ec2 agent: 461415053208, IAM role to pull the image from masterAccount
+fargate agent: 602710607084
+
 
 
 ### Issues:
 1. add 602710607084 IAM role in master account IAM role to get the clustername in drop down
    also update the subnets, security groups from the terrafrom output to jenkins, manager jenkins, configue clouds, fargate-remote account
 
+  in the remote account, under task-permission: please point it to controller root account
+
 9. automate the jenkins-controller.tf to read multi agents instead of hardcoding them
 
-10. user is missing the overall read/write permissions
-     The “missing the Overall/Read permissions” is most likely that the okta group is not assigned permissions in Jenkins
-     Need a group “Jenkins - ADX POC - Users” in jenkins, and can assign it “admin” role for now
+3. jenkins-agent.tf line no: 53, manually adding the controller, automate this asap.
 
-13. I am manually adding the 3rd cloud, not able to run, why ?
 
-14. https security group by default is not https , check why ?

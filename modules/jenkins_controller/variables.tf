@@ -247,3 +247,7 @@ variable "remote_agent_subnets" {}
 variable "remote_agent_security_groups" {}
 variable "remote_agent_ecs_cluster_name" {}
 variable "remote_agent_fargate_cluster_name" {}
+
+variable "create_ecs_task_def_for_agents" {
+  default = false
+}

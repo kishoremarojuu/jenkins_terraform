@@ -51,7 +51,8 @@ module "serverless_jenkins" {
   remote_agent_subnets              = "subnet-08a7c7a57722fa82f, subnet-0b24413f38002a2a7" #CHANGEME
   remote_agent_security_groups      = "sg-06df7e240cac01cc4"                            #CHANGEME
   remote_agent_ecs_cluster_name     = ""                                                #CHANGEME
-  remote_agent_fargate_cluster_name = ""                                                #CHANGEME  
+  remote_agent_fargate_cluster_name = ""                                                #CHANGEME
+  create_ecs_task_def_for_agents    = true
 }
 
 data "aws_route53_zone" "archer_net_zone" {

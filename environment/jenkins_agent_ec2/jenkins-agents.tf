@@ -53,9 +53,11 @@ module "jenkins_agent" {
   cloudwatch_prefix  = "jenkinsAgent"
   ecs_aws_ami        = var.aws_ecs_ami
   tags               = local.tags
+  create_ecs_task_def_for_agents = true
+  ecr_account_id = "871244369079"
 
   // CHANGE Following Values
-  jenkins_controller_account_id = "317443947632" #CHANGEME
+  jenkins_controller_account_id = "871244369079" #CHANGEME
 }
 // Outputs
 output "jenkins_agent_private_subnets" {

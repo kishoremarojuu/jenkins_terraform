@@ -86,4 +86,9 @@ variable "cloudwatch_prefix" {
   description = "If you want to avoid cloudwatch collision or you don't want to merge all logs to one log group specify a prefix"
 }
 
+variable "create_ecs_task_def_for_agents" {
+  default = false
+}
+variable "ecr_account_id" {}
+
 // FARGATE
