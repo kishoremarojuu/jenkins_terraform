@@ -22,9 +22,9 @@ running fargate now
 10. update the subnet, sg values in the jenkins console as well, this is manuually doing //todo automation later
 11. also update the IAM role under mainController, not sure why this is happening //todo
     "Resource": [
-    "arn:aws:iam::602710607084:role/jenkins-deploy-role",
-    "arn:aws:iam::461415053208:role/jenkins-deploy-role"
-    "arn:aws:iam::480455260188:role/jenkins-deploy-role"
+    "arn:aws:iam::444444444444:role/jenkins-deploy-role",
+    "arn:aws:iam::555555555555:role/jenkins-deploy-role"
+    "arn:aws:iam::666666666666:role/jenkins-deploy-role"
     ]
 12. Testing fargate remote job now.
 
@@ -43,15 +43,15 @@ terraform apply -target='module.jenkins_agent.module.ecs[0].aws_iam_instance_pro
 
 
 test acocunts
-master account: 871244369079 , <<871244369079.cutomimage>>
+master account: 555555555555 , <<555555555555.cutomimage>>
 
-ec2 agent: 461415053208, IAM role to pull the image from masterAccount
-fargate agent: 602710607084
+ec2 agent: 555555555555, IAM role to pull the image from masterAccount
+fargate agent: 555555555555
 
 
 
 ### Issues:
-1. add 602710607084 IAM role in master account IAM role to get the clustername in drop down
+1. add 555555555555 IAM role in master account IAM role to get the clustername in drop down
    also update the subnets, security groups from the terrafrom output to jenkins, manager jenkins, configue clouds, fargate-remote account
 
   in the remote account, under task-permission: please point it to controller root account
