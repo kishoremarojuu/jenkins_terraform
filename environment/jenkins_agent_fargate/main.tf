@@ -13,6 +13,7 @@ terraform {
     encrypt = true
 
   }
+
 }
 
 # Configure default AWS Provider
