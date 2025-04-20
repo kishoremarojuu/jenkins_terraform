@@ -1,6 +1,7 @@
 variable "environment" {
   description = "A name to describe the environment we're creating."
 }
+
 variable "name_prefix" {
   description = "A name to prefix with resources we're creating."
 }
