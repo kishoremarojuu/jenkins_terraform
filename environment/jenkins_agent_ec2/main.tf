@@ -5,6 +5,7 @@ terraform {
       version = "~> 3.0"
     }
   }
+
   backend "s3" {
     profile = "871244369079MasterController"   #CHANGEME
     bucket  = "jenkins-ivd-integration" #CHANGEME
